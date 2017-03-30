@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="css/index.css" />
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-default/index.css">
+		<script src="js/jquery.js"></script>
+		<script src="js/vue.js"></script>
+		<script src="js/vue-resource.js"></script>
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<!--<script src="js/index.js"></script>-->
+	</head>
+
+	<body>
+		<div id="single">
+			<div id="Ohh_library">
+				<div class="Ohh_library_content">
+					<div class="Ohh_library_head">
+						Ohh奇妙线上图书馆
+					</div>
+					<div id="TabMain">
+						<div class="tabItemContainer">
+							<li>
+								<a class="tabItemCurrent" @click='Init()'>可借书</a>
+							</li>
+							<li>
+								<a @click='Init()'>不可借书</a>
+							</li>
+						</div>
+						<div class="tabBodyContainer">
+							<div class="tabBodyItem tabBodyCurrent">
+								<ul>
+									<li class="" v-for="(item,index) in Noborrow">
+										<div class="pic">
+											<a href="">
+												<img :src="baseUrl+item.src" class="max160">
+											</a>
+											
+										</div>
+										<div class="name">
+											<a href="#">
+												{{item.name}}
+											</a>
+										</div>
+										<button @click="infoBorrowShows(index)">查看详情</button>
+									</li>
+								</ul>
+							</div>
+							<div class="tabBodyItem">
+								<ul>
+									<li class="" v-for='(item,index) in borrow'>
+										<div class="pic">
+											<a target="_blank" href="">
+												<img :src="baseUrl+item.src" class="max160">
+											</a>
+										</div>
+										<div class="name">
+											<a target="_blank" href="#">
+												{{item.name}}
+											</a>
+										</div>
+										<button @click='back(index)'>还书</button>
+										<button @click="infoBackShows(index)">查看详情</button>
+									</li>
+								</ul>
+							</div>
+							<div v-for='(item,index) in borrowInfo'>
+							<el-dialog title="详细信息" v-model="dialogVisible" size="tiny" custom-class='nihaoa' >
+								<div><span>书名:</span><span>{{item.name}}</span></div>
+								<div><span>作者:</span><span>{{item.author}}</span></div>
+								<div><span>简介:</span><span>{{item.instroduce}}</span></div>
+								<div><span>借书人:</span><input type="text" v-model='msg' /></div>
+								<span slot="footer" class="dialog-footer">
+						    <el-button @click="dialogVisible = false">取 消</el-button>
+						    <el-button type="primary" @click="remove(nowIndex)">确 定借书</el-button>
+						  </span>
+							</el-dialog>
+							</div>
+							<div v-for='(item,index) in backInfo'>
+							<el-dialog title="详细信息" v-model="dialogVisibles" size="tiny" custom-class='nihaoa' >
+								
+								<div><span>借书人:</span>{{item.borrowPeople}}</div>
+								<div><span>借书时间:</span>{{item.borrowT}}</div>
+								<div><span>借书时间:</span>{{item.backT}}</div>
+								<span slot="footer" class="dialog-footer">
+						    <el-button @click="dialogVisibles = false">取 消</el-button>
+						  </span>
+							</el-dialog>
+						   </div>
+
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>
+<script>
+	var vue = new Vue({
+		el: '#single',
+		data: {
+			dialogVisible: false,
+			dialogVisibles:false,
+			nowIndex: -100,
+			msg:'',
+			Noborrow: [],
+			borrow: [],
+			borrowInfo: [],
+			backInfo:[],
+			baseUrl:'./upload/'
+			
+
+		},
+        mounted: function () {
+            this.$http.get('/get_book').then(function(res){
+                            this.Noborrow=res.data;
+                        },function(res){
+                            alert(res.status);
+                        });
+            this.$http.get('/get_nobook').then(function(res){
+                            this.borrow=res.data;
+                        },function(res){
+                            alert(res.status);
+                        });            
+        },
+		methods: {
+			Init() {
+				$(".tabItemContainer>li").click(function() {
+					$(".tabItemContainer>li>a").removeClass("tabItemCurrent");
+					$(".tabBodyItem").removeClass("tabBodyCurrent");
+					$(this).find("a").addClass("tabItemCurrent");
+					$($(".tabBodyItem")[$(this).index()]).addClass("tabBodyCurrent");
+				});
+			},
+			infoBorrowShows(n) {
+				this.dialogVisible = true;
+				this.nowIndex = n;
+				var removed = this.Noborrow[n];
+						 this.borrowInfo.splice(0,10000,{
+						                            src:removed.src,
+						                            name: removed.name,
+						                            author:removed.author,
+						                            instroduce:removed.instroduce,
+
+						                        });
+			},
+			infoBackShows(n) {
+				this.dialogVisibles= true;
+				this.nowIndex = n;
+				var removed = this.borrow[n];
+
+						 this.backInfo.splice(0,10000,{
+						                            src:removed.src,
+						                            name: removed.name,
+						                            author:removed.author,
+						                            instroduce:removed.instroduce,
+						                            borrowPeople:removed.borrowPeople,
+						                            borrowT:removed.borrowT,
+						                            backT:removed.backT
+						                        });
+						 
+						                        
+				
+			},
+			      	
+			remove(n) {
+				this.dialogVisible = false;
+				var date=new Date;
+				var Oy=date.getFullYear();
+				var Om=date.getMonth()+1;
+				var Od=date.getDate();
+				var currentTime=Oy+'/'+Om+'/'+Od;
+				var timestamp1 = new Date('2017-3-29 14:50:00'), timestamp2 = new Date('2017-3-1 14:50:00');
+			    var d = timestamp1.getTime() - timestamp2.getTime();
+			    var c=new Date().getTime()+d;
+			    var nextTime=new Date(parseInt(c)).toLocaleString().replace(/:\d{1,2}$/,' ')
+				var removed = this.Noborrow.splice(n, 1);
+				this.borrow.push({
+					id:removed[0].ID,
+					src: removed[0].src,
+					name: removed[0].name,
+					author: removed[0].author,
+					instroduce: removed[0].instroduce,
+					borrowPeople:this.msg,
+					borrowT:currentTime,
+					backT:nextTime
+					
+				});
+				this.$http.get('/upa_book',{
+                          id:removed[0].ID,
+                          borrowPeople:this.msg,
+                          borrowT:currentTime,
+                          backT:nextTime,
+                          status:'nok'
+                        }).then(function(res){
+                            console.log(res.data);
+                        },function(res){
+                            console.log(res.data);
+                        });
+               
+				
+               this.msg='';
+			},
+			back(n) {
+				var removed = this.borrow.splice(n,1);
+				this.Noborrow.push({
+					src: removed[0].src,
+					name: removed[0].name,
+					author: removed[0].author,
+					instroduce: removed[0].instroduce
+				});
+				this.$http.get('/upa_nobook',{
+                          id:removed[0].ID,
+                          status:'ok'
+                        }).then(function(res){
+                            console.log(res.data);
+                        },function(res){
+                            console.log(res.data);
+                        });
+				
+				
+
+			},
+
+		}
+	})
+</script>
