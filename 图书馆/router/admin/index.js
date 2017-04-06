@@ -13,12 +13,9 @@ module.exports=function (){
     }
   });
 
-  router.get('/', (req, res)=>{
-    res.render('admin/index.ejs', {});
-  });
 
+  router.use('/', require('./banners')());
   router.use('/login', require('./login')());
-  router.use('/banners', require('./banners')());
 
   return router;
 };

@@ -36,7 +36,7 @@ module.exports = function() {
 											console.error(err);
 											res.status(500).send('database error').end();
 										} else {
-											res.redirect('/admin/banners');
+											res.redirect('/admin');
 										}
 									});
 								}
@@ -126,7 +126,7 @@ module.exports = function() {
 												console.error(err);
 												res.status(500).send('database error').end();
 											} else {
-												res.redirect('/admin/banners');
+												res.redirect('/admin');
 											}
 										});
 									}
@@ -139,7 +139,7 @@ module.exports = function() {
 								console.error(err);
 								res.status(500).send('database error').end();
 							} else {
-								res.redirect('/admin/banners');
+								res.redirect('/admin');
 							}
 						});
 					}
@@ -157,7 +157,7 @@ module.exports = function() {
 						console.error(err);
 						res.status(500).send('database error').end();
 					} else {
-						res.redirect('/admin/banners');
+						res.redirect('/admin');
 					}
 				});
 			} else { //添加
@@ -168,7 +168,7 @@ module.exports = function() {
 						console.error(err);
 						res.status(500).send('database error').end();
 					} else {
-						res.redirect('/admin/banners');
+						res.redirect('/admin');
 					}
 				});
 			}

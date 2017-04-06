@@ -40,7 +40,6 @@ server.set('views','template');//告诉把模版引擎放在了template下面
 server.set('view engine','html');//让他以html的形式输出
 
 //4、route
-// server.use('/index',require('./router/1.js')());   测试router
 server.use('/admin/', require('./router/admin/index.js')());
 server.use('/',require('./router/web/index.js')());
 //5、static   主要从static下面拿东西
