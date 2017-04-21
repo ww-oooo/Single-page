@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" href="css/banner.css" />
+
+	</head>
+
+	<body>
+		<div class="contain">
+			<div class="header">
+				<div class="logo">
+					<div></div><span>奇妙创想企业图书馆</span></div>
+			</div>
+			<div class="box"></div>
+
+			<div class="main">
+				<aside class="menu-expanded">
+					<div class="menu_title">
+						添加书籍
+					</div>
+
+					<form action="?" method="post" enctype="multipart/form-data">
+						书名：<input type="text" name="name" /><br> 
+						作者：<input type="text" name="author" /><br>
+						部门：<input type="text" name="branch" /><br>
+						<span>内容简介：</span><textarea name="instroduce"></textarea><br>
+						<span>封面：</span>
+						<a href="javascript:;" class="file">上传封面
+							<input type="file" name="f1" id="">
+						</a>
+						<input type="submit" value="保存" class="sub" />
+					</form>
+				</aside>
+				<section class="contain_content">
+					<table border="1" width="100%" border="1" cellspacing="0" cellpadding="0">
+						<thead>
+							<tr>
+								<th>序号</th>
+								<th>标题</th>
+								
+								
+								<th>操作</th>
+								
+							</tr>
+						</thead>
+						<tbody>
+			<%=banners%>
+							<% for(var i=0;i<banners.length;i++){ %>
+							<tr>
+								<td>
+									<%=banners[i].ID%>
+								</td>
+								<td>
+									<%=banners[i].title%>
+								</td>
+								
+								<td>
+									<a href="?act=mod&id=<%=banners[i].ID%>" class='btn'>修改</a>
+
+									<a href="?act=del&id=<%=banners[i].ID%>" class='btn'>删除</a>
+
+								</td>
+			
+							</tr>
+							<% } %>
+						</tbody>
+					</table>
+				</section>
+			</div>
+
+			<% if(typeof mod_data!='undefined'){ %>
+			<div class="shadow"></div>
+			<div class="mod_dialog">
+				<div class="el-dialog__header">
+					<span class="el-dialog__title">修改书籍</span>
+				</div>
+				<form action="?" method="post" enctype="multipart/form-data">
+					<input type="hidden" name="mod_id" value="<%= mod_data.ID %>" /> 书名：
+					<input type="text" name="name" value="<%= mod_data.name %>" /><br> 作者：
+					<input type="text" name="author" value="<%= mod_data.author %>" /><br>部门：
+					<input type="text" name="branch" value="<%= mod_data.branch%>"/><br>
+					<span>内容简介：</span>
+					<textarea name="instroduce"><%= mod_data.instroduce %></textarea><br>
+					<span>封面：</span>
+					<a href="javascript:;" class="file">上传封面
+						<input type="file" name="f1" id="">
+					</a>
+					<input type="submit" value="修改" class='sub' />
+					<a href="/admin" class='sub'>取消修改</a>
+				</form>
+			</div>
+			<% } %>
+
+		</div>
+	</body>
+
+</html>

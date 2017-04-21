@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8" />
+		<title>Document</title>
+		<script src="js/vue.js"></script>
+		<script src="js/vue-resource.js"></script>
+	</head>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		
+		.header {
+			width: 100%;
+			height: 80px;
+			line-height: 80px;
+			background-color: #EE7419;
+		}
+		
+		.edit-container[data-v-a66807c2] {
+			width: 1200px;
+			margin: 50px auto;
+			padding: 50px;
+			color: #666;
+			background-color: #fff;
+			border-radius: 4px;
+			box-shadow: 0 0 10px #aaa;
+		}
+		
+		.edit-container h2 {
+			height: 60px;
+			margin-bottom: 30px;
+			line-height: 60px;
+			text-align: center;
+			font-size: 20px;
+			color: #555;
+			cursor: pointer;
+		}
+		
+		.edit-container .content[data-v-a66807c2] {
+			padding: 30px;
+			border-top: 2px solid #ccc;
+			border-bottom: 2px solid #ccc;
+		}
+		
+		.edit-container .add-item[data-v-a66807c2] {
+			height: 80px;
+			line-height: 80px;
+			text-align: center;
+			background-color: #eee;
+			cursor: pointer;
+		}
+		
+		.edit-container footer[data-v-a66807c2] {
+			position: relative;
+			height: 60px;
+			margin-top: 30px;
+			line-height: 60px;
+		}
+		
+		.edit-container footer .btn-box[data-v-a66807c2] {
+			position: absolute;
+			right: 20px;
+			display: inline-block;
+		}
+		
+		.edit-container footer .save,
+		.edit-container footer .issue {
+			width: 100px;
+			height: 30px;
+			padding-top: 3px;
+			padding-bottom: 3px;
+			line-height: 100%;
+			color: #777;
+			border: .1px solid #aaa;
+			border-radius: 2px;
+			background-color: #fff;
+			cursor: pointer;
+		}
+		
+		.edit-container footer .issue {
+			margin-left: 40px;
+			color: #fff;
+			border: 1px solid #ee7419;
+			background-color: #ee7419;
+		}
+		
+		.edit-container .add-option[data-v-a66807c2] {
+			height: 80px;
+			line-height: 80px;
+			text-align: center;
+		}
+		
+		.edit-container .add-option button[data-v-a66807c2] {
+			height: 30px;
+			width: 80px;
+			margin-left: 40px;
+			border: 2px solid #ccc;
+			background-color: #eee;
+			cursor: pointer;
+		}
+		
+		.edit-container .shadow {
+			position: fixed;
+			left: 0;
+			top: 0;
+			z-index: 10;
+			width: 100%;
+			height: 100%;
+			background: rgba(85, 85, 85, 0.7);
+		}
+		
+		.edit-container .shadow .add-qs-dialog {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			width: 400px;
+			height: 280px;
+			-webkit-transform: translateX(-50%) translateY(-50%);
+			transform: translateX(-50%) translateY(-50%);
+			border-radius: 5px;
+			box-shadow: 0 0 5px #555;
+			background-color: #fff;
+		}
+		
+		.edit-container .shadow header[data-v-a66807c2] {
+			height: 50px;
+			padding-left: 30px;
+			padding-right: 30px;
+			line-height: 50px;
+			border-radius: 5px;
+			background-color: #f7f7f7;
+		}
+		
+		.edit-container .shadow header .close-btn {
+			position: absolute;
+			right: 30px;
+			color: #bbb;
+			cursor: pointer;
+		}
+		
+		.edit-container .shadow .add-qs-dialog p[data-v-a66807c2],
+		.edit-container .shadow .dialog p[data-v-a66807c2] {
+			margin: 30px 0 20px 30px;
+		}
+		
+		.edit-container .shadow label[data-v-a66807c2] {
+			display: block;
+			margin-left: 30px;
+			margin-bottom: 20px;
+		}
+		
+		.edit-container .shadow label[data-v-a66807c2]:nth-of-type(2) {
+			margin-left: 57px;
+		}
+		
+		.edit-container .shadow .btn-box[data-v-a66807c2] {
+			position: absolute;
+			bottom: 0;
+			width: 100%;
+			height: 60px;
+			text-align: center;
+			line-height: 60px;
+		}
+		
+		.edit-container .shadow .btn-box .yes[data-v-a66807c2] {
+			margin-right: 10px;
+			color: #fff;
+			background-color: #ee7419;
+			border: 1px solid #ee7419;
+		}
+		
+		.edit-container button[data-v-a66807c2] {
+			width: 70px;
+			height: 25px;
+			padding-top: 3px;
+			padding-bottom: 3px;
+			line-height: 100%;
+			color: #777;
+			border: 1px solid #555;
+			border-radius: 2px;
+			background-color: #fff;
+			cursor: pointer;
+		}
+		
+		.change_input {
+			height: 60px;
+			margin-bottom: 30px;
+			line-height: 60px;
+			text-align: center;
+			background: #ccc;
+			outline: none;
+			border: 1px solid #fff;
+			width: 100%;
+			font-size: 20px;
+			color: #333333;
+			color: #555;
+			cursor: pointer;
+		}
+		
+		.edit-container .questions {
+			display: -webkit-box;
+			display: -ms-flexbox;
+			display: flex;
+			-webkit-box-orient: horizontal;
+			-webkit-box-direction: normal;
+			-ms-flex-direction: row;
+			flex-direction: row;
+			-ms-flex-wrap: nowrap;
+			flex-wrap: nowrap;
+			-webkit-box-pack: justify;
+			-ms-flex-pack: justify;
+			justify-content: space-between;
+			padding: 15px 20px;
+			margin-bottom: 20px;
+		}
+		
+		.edit-container .questions .qs-right {
+			display: -webkit-box;
+			display: -ms-flexbox;
+			display: flex;
+			-webkit-box-orient: vertical;
+			-webkit-box-direction: normal;
+			-ms-flex-direction: column;
+			flex-direction: column;
+			-webkit-box-pack: justify;
+			-ms-flex-pack: justify;
+			justify-content: space-between;
+			width: 200px;
+		}
+		
+		.edit-container .questions .qs-right p span {
+			cursor: pointer;
+		}
+	</style>
+
+	<body>
+		<div id="single">
+			<div class="header">
+				<a>ohh</a>
+				<a>我的问卷</a>
+			</div>
+			<div data-v-a66807c2="" class="edit-container">
+
+				<h2 @click="titleClick" v-if="!titleChange">{{qsItem.title}}</h2>
+
+				<input class="change_input" name="qsTitle" v-if="titleChange" v-model="titleValue" @blur="onblur" @keyup.enter="onsubmit" ref="titleInput">
+				<!---->
+				<div data-v-a66807c2="" class="content">
+					<div class="questions" v-for="(qs, index) in qsItem.question">
+						<div class="qs-left">
+							<p class="qs-title">
+								{{qs.num}}&nbsp;{{qs.title}}&nbsp;{{getMsg(qs)}}
+							</p>
+							<p v-for="option in qs.options" class="option">
+								<label>
+              <input 
+              type="radio" 
+              :name="`${qs.num}-${qs.title}`"
+              v-if="qs.type === 'radio'">
+              <input 
+              type="checkbox" 
+              :name="`${qs.num}-${qs.title}`"
+              v-if="qs.type === 'checkbox'">{{option}}
+            </label>
+							</p>
+							<textarea v-if="qs.type === 'textarea'"></textarea>
+						</div>
+						<div class="qs-right">
+
+							<p>
+								<span v-if="index !== 0" @click="goUp(index)">上移</span>
+								<span v-if="index !== qsItem.question.length - 1" @click="goDown(index)">下移</span>
+								<span @click="del(index)">删除</span>
+							</p>
+						</div>
+
+					</div>
+					<div data-v-a66807c2="" class="add">
+						<div data-v-a66807c2="" class="add-option" v-if="showBtn">
+							<button data-v-a66807c2="" @click="addRadio">单选</button>
+							<button data-v-a66807c2="" @click="addCheckbox">多选</button>
+							<button data-v-a66807c2="" @click="addTextarea">文本框</button>
+						</div>
+						<div data-v-a66807c2="" class="add-item" @click="addItemClick">
+							<span data-v-a66807c2="" class="add-icon">+</span>
+							<span data-v-a66807c2="">添加问题</span>
+						</div>
+					</div>
+				</div>
+				<!--模态框-->
+				<div class="shadow" v-if="showAddQsDialog">
+					<div class="add-qs-dialog">
+						<header data-v-a66807c2=""><span data-v-a66807c2="">提示</span>
+							<span data-v-a66807c2="" class="close-btn" @click="showAddQsDialog = false">X</span>
+						</header>
+						<p data-v-a66807c2="">分别在下面的输入框中输入问题的名称以及选项, 选项用半角逗号","分隔开</p>
+						<label data-v-a66807c2="">输入题目标题
+							<input data-v-a66807c2="" type="text" v-model="qsInputTitle">
+						</label>
+						<label data-v-a66807c2="" v-if="showAddOptionInput">输入选项
+							<input data-v-a66807c2="" type="text" v-model="qsInputOptions">
+						</label>
+						<div data-v-a66807c2="" class="btn-box">
+							<button data-v-a66807c2="" class="yes" @click="validateAddQs">确定</button>
+							<button data-v-a66807c2="" @click="showAddQsDialog = false">取消</button></div>
+					</div>
+				</div>
+				<!---->
+				<footer data-v-a66807c2="">
+					<div data-v-a66807c2="" class="btn-box">
+						<button class="issue" @click='save()'>保存问卷</button>
+					</div>
+				</footer>
+			</div>
+		</div>
+	</body>
+
+</html>
+<script>
+	vue = new Vue({
+		el: '#single',
+		data: {
+			qsItem: {},
+			showBtn: false,
+			showAddQsDialog: false,
+			showAddOptionInput: true,
+			titleChange: false,
+			qsInputTitle: '',
+			titleValue: '',
+			qsInputOptions: [],
+		},
+		mounted: function() {
+			let item = {};
+			item.title = '这里是标题'
+			item.question = [];
+			this.qsItem = item;
+			console.log(this.qsItem)
+		},
+		methods: {
+
+			addItemClick: function() {
+
+				this.showBtn = !this.showBtn
+
+			},
+			onblur() {
+				this.titleValue = this.titleValue.trim()
+				this.qsItem.title = this.titleValue === '' ? this.qsItem.title : this.titleValue
+				this.titleChange = false
+			},
+			onsubmit() {
+				this.titleValue = this.titleValue.trim()
+				this.qsItem.title = this.titleValue === '' ? this.qsItem.title : this.titleValue
+				this.titleChange = false
+			},
+			titleClick() {
+				this.titleChange = !this.titleChange
+				setTimeout(() => {
+					this.$refs.titleInput.focus()
+				}, 150)
+			},
+			getMsg(item) {
+				let msg = ''
+				if(item.type === 'radio') {
+					msg = '(单选题)'
+				} else if(item.type === 'checkbox') {
+					msg = '(多选题)'
+				} else {
+					msg = '(文本题)'
+				}
+
+				return item.isNeed ? `${msg} *` : msg
+			},
+			swapItems(oldIndex, newIndex) {
+				let [newVal] = this.qsItem.question.splice(newIndex, 1, this.qsItem.question[oldIndex])
+				this.qsItem.question.splice(oldIndex, 1, newVal)
+			},
+			goUp(index) {
+				this.swapItems(index, index - 1)
+			},
+			goDown(index) {
+				this.swapItems(index, index + 1)
+			},
+
+			del(index) {
+				this.qsItem.question.splice(index, 1)
+			},
+			showAddDialog(msg, showOption) {
+				this.showAddQsDialog = true
+				this.showAddOptionInput = showOption
+				this.info = msg
+				this.qsInputTitle = ''
+				this.qsInputOptions = ''
+			},
+			addRadio() {
+				this.showAddDialog('分别在下面的输入框中输入问题的名称以及选项, 选项用半角逗号","分隔开', true)
+				this.addOptionType = 'radio'
+			},
+			addCheckbox() {
+
+				this.showAddDialog('分别在下面的输入框中输入问题的名称以及选项, 选项用半角逗号","分隔开', true)
+				this.addOptionType = 'checkbox'
+			},
+			addTextarea() {
+
+				this.showAddDialog('在输入框中输入问题名称', false)
+				this.addOptionType = 'textarea'
+			},
+			validateAddQs() {
+				let qsTitle = this.qsInputTitle.trim();
+				if(qsTitle === '') return alert('题目不能为空');
+				if(this.showAddOptionInput) {
+					let qsOptions = this.qsInputOptions.trim()
+					console.log(qsOptions)
+					if(qsOptions === '') return alert('选项不能为空！')
+					qsOptions = qsOptions.split(',')
+					for(let i = 0, length = qsOptions.length; i < length; i++) {
+						if(qsOptions[i].trim() === '') {
+							return alert('存在某个选项内容为空')
+						}
+					}
+
+					this.qsItem.question.push({
+						'title': qsTitle,
+						'type': this.addOptionType,
+						'options': qsOptions
+					})
+					console.log(this.qsItem)
+					this.showAddQsDialog = false
+				} else {
+					this.qsItem.question.push({
+						'title': qsTitle,
+						'type': 'textarea'
+					})
+					this.showAddQsDialog = false
+				}
+
+			},
+			save() {
+
+				if(this.qsItem.question.length === 0) {
+					this.showDialog = false
+					alert('问卷为空无法保存')
+				} else {
+					console.log(this.qsItem)
+					var bigTitle = this.qsItem.title;
+					//         console.log(bigTitle)
+					this.$http.get('/send_bigTitle', {
+						bigTitle: bigTitle,
+						qsItem: this.qsItem
+					}).then(function(res) {
+						console.log(res.data);
+					}, function(res) {
+						console.log(res.data);
+					});
+
+				}
+				window.location.href="index.html"; 
+			}
+		}
+	})
+</script>

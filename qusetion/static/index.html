@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="css/index.css" />
+		<link rel="stylesheet" href="css/base.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/vue-resource.js"></script>
+		<script src="js/element_ui.js"></script>
+	</head>
+	<style>
+		.header {
+			width: 100%;
+			height: 80px;
+			line-height: 80px;
+			background-color: #EE7419;
+		}
+		
+		.qs-list[data-v-c4f8569a] {
+			width: 1200px;
+			margin: 20px auto;
+			color: #666;
+			font-size: 16px;
+		}
+		
+		.qs-list ul[data-v-c4f8569a]:nth-of-type(1) {
+			background-color: #efefef;
+			padding-left: 20px;
+			padding-right: 20px;
+			overflow: hidden;
+		}
+		
+		.qs-list ul[data-v-c4f8569a]:nth-of-type(1) li:nth-of-type(2) {
+			padding-left: 180px;
+		}
+		
+		.qs-list ul li {
+			display: inline-block;
+			overflow: hidden;
+		}
+		
+		.qs-list ul li:nth-of-type(1) {
+			width: 50%;
+			text-align: center;
+		}
+		
+		.qs-list ul li:nth-of-type(2) {
+			width: 34%;
+		}
+		
+		.qs-list ul li .QSadd {
+			display: inline-block;
+			height: 30px;
+			width: 95px;
+			margin-left: 240px;
+			line-height: 28px;
+			font-size: 14px;
+			text-align: center;
+			color: #fff;
+			border: 1px solid #ee7419;
+			border-radius: 3px;
+			background-color: #ee7419;
+			cursor: pointer;
+		}
+		
+		.qs-list ul {
+			height: 60px;
+			list-style: none;
+			line-height: 58px;
+			border-bottom: 1px solid #eee;
+			background-color: #fff;
+			overflow: hidden;
+		}
+		
+		.qs-list button:hover {
+			box-shadow: 0 0 5px #bbb;
+		}
+		
+		.qs-list .btn_look:hover {
+			box-shadow: 0 0 5px #bbb;
+		}
+		
+		.qs-list button,
+		.btn_look {
+			width: 70px;
+			height: 25px;
+			padding-top: 3px;
+			padding-bottom: 3px;
+			line-height: 100%;
+			color: #777;
+			border: 1px solid #555;
+			border-radius: 2px;
+			background-color: #fff;
+			cursor: pointer;
+			margin-left: 20px;
+			font-size: 13.33333px;
+		}
+		
+		.btn_look {
+			display: inline-block;
+			text-align: center;
+			line-height: 125%;
+		}
+	</style>
+
+	<body>
+		<div id="single">
+			<div class="header">
+				<a>ohh</a>
+				<a>我的问卷</a>
+			</div>
+			<div data-v-c4f8569a="" class="qs-list">
+				<ul data-v-c4f8569a="">
+					<li>标题</li>
+					<li>操作
+
+						<a href="1.html" class='QSadd'>+新建问卷</a>
+
+					</li>
+				</ul>
+
+				<ul v-for="(item,index) in qsList">
+
+					<li>{{item.title}}</li>
+					<li>
+						<button>编辑</button>
+
+						<button @click="delItem(index,item.ID)">删除</button>
+						<button @click='getID(item.ID)'>查看问卷</button>
+						<button @click='getData(item.ID)'>查看数据</button>
+					</li>
+				</ul>
+			</div>
+
+	</body>
+
+</html>
+<script>
+	var vue = new Vue({
+		el: '#single',
+		data: {
+			qsList: [],
+		},
+		mounted: function() {
+			this.$http.get('get_bigTitle').then(
+				function(res) {
+
+					this.qsList = res.data
+
+				},
+				function(res) {
+					console.log(res.data)
+				}
+			)
+
+		},
+		methods: {
+			delItem(index, ID) {
+				console.log(ID)
+				this.qsList.splice(index, 1);
+				this.$http.get('del_bigTitle', {
+					ID: ID
+				}).then(
+					function(res) {
+						console.log(res.data)
+					},
+					function(res) {
+						console.log(res.data)
+					}
+				)
+			},
+			getID(ID) {
+				var a = ID;
+				var str = "fill.html?id=" + a;
+				console.log(str)
+				window.location.href = str;
+
+			},
+			getData(ID) {
+				var a = ID;
+				var str = "data.html?id=" + a;
+				console.log(str)
+				window.location.href = str;
+
+			}
+		},
+
+	})
+</script>

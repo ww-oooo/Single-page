@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="js/vue.js"></script>
+		<script src="js/vue-resource.js"></script>
+		<link rel="stylesheet" href="css/base.css" />
+	</head>
+	<style>
+		.header {
+			width: 100%;
+			height: 80px;
+			line-height: 80px;
+			background-color: #EE7419;
+		}
+		
+		.fill-container {
+			width: 1200px;
+			margin: 50px auto;
+			padding: 50px;
+			color: #666;
+			background-color: #fff;
+			border-radius: 4px;
+			box-shadow: 0 0 10px #aaa;
+		}
+		
+		.fill-container h2 {
+			margin-bottom: 30px;
+			text-align: center;
+			font-size: 20px;
+			color: #555;
+		}
+		
+		.fill-container .content {
+			padding: 30px;
+			border-top: 2px solid #ccc;
+			border-bottom: 2px solid #ccc;
+		}
+		
+		.fill-container footer {
+			height: 60px;
+			margin-top: 30px;
+			text-align: center;
+			line-height: 60px;
+		}
+		
+		.fill-container footer .submit {
+			width: 100px;
+			height: 30px;
+			padding-top: 3px;
+			padding-bottom: 3px;
+			line-height: 100%;
+			color: #fff;
+			border: 1px solid #ee7419;
+			border-radius: 2px;
+			background-color: #ee7419;
+			cursor: pointer;
+		}
+		
+		.fill-container .dialog {
+			position: fixed;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(85, 85, 85, 0.7);
+		}
+		
+		.fill-container .dialog .submit-dialog {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			width: 400px;
+			height: 200px;
+			-webkit-transform: translateX(-50%) translateY(-50%);
+			transform: translateX(-50%) translateY(-50%);
+			border-radius: 5px;
+			box-shadow: 0 0 5px #555;
+			background-color: #fff;
+		}
+		
+		.fill-container .dialog header {
+			height: 50px;
+			padding-left: 30px;
+			padding-right: 30px;
+			line-height: 50px;
+			border-radius: 5px;
+			background-color: #f7f7f7;
+		}
+		
+		.fill-container .dialog .submit-dialog p {
+			margin-top: 30px;
+			margin-left: 30px;
+		}
+		
+		.fill-container .dialog .btn-box {
+			position: absolute;
+			bottom: 0;
+			width: 100%;
+			height: 60px;
+			text-align: center;
+			line-height: 60px;
+		}
+		
+		.fill-container .dialog .btn-box .yes {
+			margin-right: 10px;
+			color: #fff;
+			background-color: #ee7419;
+			border: 1px solid #ee7419;
+		}
+		
+		.fill-container .dialog .btn-box button {
+			width: 70px;
+			height: 25px;
+			padding-top: 3px;
+			padding-bottom: 3px;
+			line-height: 100%;
+			color: #777;
+			border: 1px solid #555;
+			border-radius: 2px;
+			background-color: #fff;
+			cursor: pointer;
+		}
+	</style>
+
+	<body>
+		<div id="single">
+			<div class="header">
+				<a>ohh</a>
+				<a>我的问卷</a>
+			</div>
+			<div class="fill-container">
+				<h2>{{qsItem.title}}</h2>
+				<div class="content">
+					<div class="content-item" v-for="item in qsItem.question">
+						<p class="qs-title">
+							{{item.quename}}&nbsp;{{getMsg(item)}}
+						</p>
+						<p v-for="option in item.quecontent" class="option">
+							<label>
+              <input 
+              type="radio" 
+              :name="`${item.ID}-${item.title}`"
+              v-model="requiredItem[item.ID]"
+              v-if="item.type === 'radio'"
+              :value="option">
+              <input 
+              type="checkbox" 
+              :name="`${item.ID}-${item.title}`"
+              v-model="ischeckdate"
+              v-if="item.type === 'checkbox'"
+              :value="option">{{option}}
+            </label>
+						</p>
+						<textarea v-if="item.type === 'textarea'" v-model="requiredItem[item.ID]
+							      "></textarea>
+					</div>
+				</div>
+				<div class="dialog" v-if="showDialog">
+
+					<div class="submit-dialog">
+						<header>
+							<span>提示</span>
+
+						</header>
+						<p>{{info}}</p>
+						<div class="btn-box">
+							<button class="yes" @click="showDialog = false">确定</button>
+							<button @click="showDialog = false">取消</button>
+						</div>
+					</div>
+				</div>
+				<footer>
+					答题人:<input type="text" v-model="anItem.name"/>
+					<button @click="submit" class="submit">提交</button>
+				</footer>
+			</div>
+
+		</div>
+	</body>
+
+</html>
+<script>
+	var vue = new Vue({
+		el: '#single',
+		data: {
+			showDialog: false,
+			qsItem: {},
+			requiredItem: {},
+			anItem:{},
+			ischeckdate:[],
+		},
+		
+		mounted: function() {
+			var reqItem={};
+			reqItem.name='';
+			reqItem.answer=[];
+			this.anItem=reqItem;
+			var subScript = location.search.substr(4);
+			var item = {};
+			item.title = '';
+			item.question = [];
+         
+			this.$http.get('get_aaa', {
+				ID: subScript
+			}).then(
+				function(res) {
+					item.title = res.data[0].title;
+				},
+				function(res) {
+                    console.log(res.data)
+				}
+			)
+			this.$http.get('get_bbb', {
+				ID: subScript
+			}).then(
+				function(res) {
+					for(var k = 0; k < res.data.length; k++) {
+						if(res.data[k].quecontent == null) {
+
+							res.data[k].quecontent = res.data[k].quecontent
+						} else {
+							res.data[k].quecontent = res.data[k].quecontent.split('&')
+						}
+
+					}
+					item.question = res.data;
+				},
+				function() {
+
+				}
+			)
+			this.qsItem = item;
+
+		},
+		methods: {
+			getMsg(item) {
+				let msg = ''
+				if(item.type === 'radio') {
+					msg = '(单选题)'
+				} else if(item.type === 'checkbox') {
+					msg = '(多选题)'
+				} else {
+					msg = '(文本题)'
+				}
+
+				return item.isNeed ? `${msg} *` : msg
+			},
+			submit() {
+				var subScript = location.search.substr(4);
+				var a = 0
+				for(var i in this.requiredItem) {
+
+					a++;
+
+				}
+				
+
+				        if (a!=0) {
+				          this.showDialog = true
+				          this.submitError = false
+				          this.info = '提交成功！'
+				        } else {
+				          this.showDialog = true
+				          this.submitError = true
+				          this.info = '提交失败！你有题目未答'
+				        }
+				        
+            this.anItem.answer.push(this.requiredItem)//bug
+            var anobj=this.anItem.answer[0];
+            var anarr=[];
+            for(var i in anobj){
+            	anarr.push(anobj[i]);
+            }
+             console.log(this.ischeckdate)
+            this.$http.get('send_answer',{
+				tID:subScript,
+				name:this.anItem.name,
+				ancontent:anarr.join('&'),
+				ischeckdate:this.ischeckdate.join("&")
+			}).then(function(){
+				
+			},function(){
+				
+			})
+			},
+			
+			
+			
+		}
+	})
+</script>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="js/vue.js"></script>
+		<script src="js/vue-resource.js"></script>
+		<link rel="stylesheet" href="css/base.css" />
+	</head>
+	<style>
+		.header {
+			width: 100%;
+			height: 80px;
+			line-height: 80px;
+			background-color: #EE7419;
+		}
+		
+		.fill-container {
+			width: 1200px;
+			margin: 50px auto;
+			padding: 50px;
+			color: #666;
+			background-color: #fff;
+			border-radius: 4px;
+			box-shadow: 0 0 10px #aaa;
+		}
+		
+		.fill-container h2 {
+			margin-bottom: 30px;
+			text-align: center;
+			font-size: 20px;
+			color: #555;
+		}
+		
+		.qs-list {
+			width: 1200px;
+			margin: 20px auto;
+			color: #666;
+			font-size: 16px;
+		}
+		
+		.qs-list ul:nth-of-type(1) {
+			background-color: #efefef;
+			padding-left: 20px;
+			padding-right: 20px;
+			overflow: hidden;
+		}
+		
+		.qs-list ul li {
+			display: inline-block;
+			overflow: hidden;
+		}
+		
+		.qs-list ul li {
+			width: 32.333333%;
+			text-align: center;
+		}
+		
+		.qs-list ul li .QSadd {
+			display: inline-block;
+			height: 30px;
+			width: 95px;
+			margin-left: 240px;
+			line-height: 28px;
+			font-size: 14px;
+			text-align: center;
+			color: #fff;
+			border: 1px solid #ee7419;
+			border-radius: 3px;
+			background-color: #ee7419;
+			cursor: pointer;
+		}
+		
+		.qs-list ul {
+			height: 60px;
+			list-style: none;
+			line-height: 58px;
+			border-bottom: 1px solid #eee;
+			background-color: #fff;
+			overflow: hidden;
+		}
+		
+		.qs-list button:hover {
+			box-shadow: 0 0 5px #bbb;
+		}
+		
+		.qs-list .btn_look:hover {
+			box-shadow: 0 0 5px #bbb;
+		}
+		
+		.qs-list button,
+		.btn_look {
+			width: 70px;
+			height: 25px;
+			padding-top: 3px;
+			padding-bottom: 3px;
+			line-height: 100%;
+			color: #777;
+			border: 1px solid #555;
+			border-radius: 2px;
+			background-color: #fff;
+			cursor: pointer;
+			margin-left: 20px;
+			font-size: 13.33333px;
+		}
+		
+		.btn_look {
+			display: inline-block;
+			text-align: center;
+			line-height: 125%;
+		}
+	</style>
+
+	<body>
+		<div id="single">
+			<div class="header">
+				<a>ohh</a>
+				<a>我的问卷</a>
+			</div>
+			<div class="fill-container">
+				<h2>xxx的答题</h2>
+				<div class="qs-list">
+					<ul>
+						<li>答题人</li>
+						<li>时间</li>
+						<li>操作</li>
+					</ul>
+					<ul v-for='(item,index) in answerPeople'>
+
+						<li>{{item.name}}</li>
+						<li>xxxx</li>
+						<li>
+							<button @click='answerInfo(item.name)'>查看详情</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+	   var vue=new Vue({
+	   	el:"#single",
+	   	data:{
+	   		answerPeople:[],
+	   	},
+	   	mounted:function(){
+	   		var subScript = location.search.substr(4);
+	   		this.$http.get('get_answerPeo', {
+				ID: subScript
+			}).then(
+				function(res) {
+					 this.answerPeople=res.data
+				},
+				function(res) {
+                    console.log(res.data)
+				}
+			)
+	   	},
+	   	methods:{
+	   		answerInfo:function(NAME){
+	   			var subScript = location.search.substr(4);
+	   			var a=NAME;
+				var str = "info.html?id="+subScript+"&name="+a;
+	   			window.location.href=str;
+	   		}
+	   	}
+	   })
+	</script>
+
+</html>
